@@ -1,10 +1,30 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+
+  <NavBarVue />
+  <router-view />
 </template>
+
+
+<script>
+import NavBarVue from './components/NavBarVue.vue'
+export default {
+  components: {
+    NavBarVue
+  },
+  mounted() {
+  },
+  data() {
+    return {
+
+    }
+  },
+  methods: {
+
+  },
+  computed: {
+  }
+}
+</script>
 
 <style>
 #app {

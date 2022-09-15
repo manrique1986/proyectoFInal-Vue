@@ -3,17 +3,36 @@ import axios from "axios";
 
 export default createStore({
   state: {
+    titulo: "",
     usuario: "",
     password: "",
     email: "",
     products: [],
     cart: [],
     usuarios: [],
+    
   },
-  getters: {},
+  getters: {
+    cartItemCount(state) {
+      return state.cart.length;
+    },
+
+    productsOnCart(state) {
+      return state.cart.map((item) => {
+        const product = state.products.find(
+          (products) => products.id === item.id
+        );
+        return {
+          titulo: product.titulo,
+          precio: product.precio,
+        };
+      });
+    },
+  
+  },
   mutations: {
     validarLogin(state) {
-      let data = state.find(
+      let data = state.usuarios.find(
         (o) => o.usuario === this.usuario && o.password === this.password
       );
       localStorage.clear();
@@ -32,7 +51,7 @@ export default createStore({
     obtenerProductos(state, payload) {
       state.products = payload;
     },
-    invrementoProduct(state, item) {
+    incrementoProduct(state, item) {
       item.cantidad++;
     },
     addProductToCart(state, products) {
@@ -48,6 +67,9 @@ export default createStore({
     deleteProductFromCart(state, index) {
       state.cart.splice(index, 1);
     },
+    LOGIN: (state, data) => {
+      state.userList = data
+  },
   },
   actions: {
     async getProducts({ commit }) {
@@ -75,13 +97,13 @@ export default createStore({
 
       context.commit("addProductToCart", resp.data);
     },
-    async setLogin(context) {
-      let resp = await axios.get(
-        "https://62e1c00cfa99731d75dbab30.mockapi.io/api/usuarios"
-      );
-      console.log(resp);
-      let data = resp.data;
-      context.commit("validarLogin", data);
+    async login(context) {
+      try {
+          let resp = await axios.get('https://62e1c00cfa99731d75dbab30.mockapi.io/api/usuarios')
+          context.commit('validarLogin', resp.data);
+      } catch (error) {
+          console.log(error)
+      }
     },
 
     async createUser(context, state) {
